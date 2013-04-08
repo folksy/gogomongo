@@ -1,0 +1,13 @@
+Install boost:
+$ util/setup-gcc-with-boost.sh
+
+Install mongo and c++ client:
+$ util/setup-mongo.sh
+
+Install ruby and bundler:
+$ sudo apt-get install ruby1.9.3
+$ sudo gem install bundler --no-rdoc --no-ri
+
+Add the lib and include paths from c++ mongo client to Makefile, eg:
+INCLUDE_DIRS := include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
+LDFLAGS       = /home/ubuntu/work/src/mongo-cxx-driver-nightly/build/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_program_options

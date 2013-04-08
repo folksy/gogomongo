@@ -1,0 +1,28 @@
+{
+  "processors" : [
+    {
+      "name" : "simple",
+      "ns" : "cpplscuke.simple_events"
+    },
+    {
+      "name" : "time",
+      "ns" : "cpplscuke.time_events",
+      "processors" : [ "time" ]
+    },
+    {
+      "name" : "hashes",
+      "ns" : "cpplscuke.hashes_events",
+      "processors" : [ "hashes" ]
+    },
+    {
+      "name" : "labelled_hashes",
+      "ns" : "cpplscuke.labelled_hashes_events",
+      "processors" : [ "labelled-hashes" ]
+    },
+    {
+      "name" : "preserve_original_message",
+      "ns" : "cpplscuke.preserve_original_message_events",
+      "processors" : [ "preserve-original-message" ]
+    }
+  ]
+}
