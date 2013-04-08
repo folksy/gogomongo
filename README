@@ -4,6 +4,9 @@ $ util/setup-gcc-with-boost.sh
 Install mongo and c++ client:
 $ util/setup-mongo.sh
 
+Install subversion:
+$ sudo apt-get install subversion --yes
+
 Install ruby and bundler:
 $ sudo apt-get install ruby1.9.3
 $ sudo gem install bundler --no-rdoc --no-ri

@@ -8,7 +8,6 @@
 #include <fstream>
 #include <map>
 #include <utility>
-#include "mongo/client/dbclient.h"
 #include <getopt.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -23,13 +22,15 @@ namespace runner {
   typedef fhq::LogServer::configs_t configs_t;
 
   void start( const string &configfname, const string &pidfname, const string &errlogfname,
-              const string &connection_string, const string &db, const string &input_collection )
+              const string &host, const int port,
+              const string &db, const string &input_collection )
   {
     cout << "Log server starting with:" << endl
          << "\tConfig filename:\t" << configfname << endl
          << "\tPID filename:\t\t" << pidfname << endl
          << "\tError log filename:\t" << errlogfname << endl
-         << "\tConnection string:\t" << connection_string << endl
+         << "\tHost:\t\t" << host << endl
+         << "\tPort:\t\t" << port << endl
          << "\tDatabase:\t\t" << db << endl
          << "\tInput collection:\t" << input_collection << endl;
     pid_t pid( getpid() );
@@ -45,7 +46,7 @@ namespace runner {
         pdescs.push_back( pdesc.second.data() );
       configs[name] = { ns, pdescs };
     }
-    fhq::LogServer( connection_string, db, input_collection, configs, errlogfname )();
+    fhq::LogServer( host, db, port, input_collection, configs, errlogfname )();
   }
 
   void stop( const string &pidfname )
@@ -72,25 +73,28 @@ int main( int argc, char *argv[] )
       throw std::runtime_error( "Any run command requires a config filename parameter." );
     std::string configfname( command.compare( "stop" ) == 0 ? "N/A" : argv[2] );
     std::string
-      connection_string( "localhost" ),
+      host( "localhost" ),
       db( "logserver" ),
       input_collection( "_lsevents" ),
       pidfname( "pids/logserver.pid" ),
       errlogfname( "log/errors.log" );
+    int port( 27017 );
     static struct option long_options[] = {
-      { "connection-string", required_argument, nullptr, 'c' },
-      { "db",                required_argument, nullptr, 'd' },
-      { "input-collection",  required_argument, nullptr, 'i' },
-      { "pidfile",           required_argument, nullptr, 'p' },
-      { "errfile",           required_argument, nullptr, 'e' }
+      { "host",             required_argument, nullptr, 'H' },
+      { "port",             required_argument, nullptr, "P" },
+      { "db",               required_argument, nullptr, 'D' },
+      { "input-collection", required_argument, nullptr, 'I' },
+      { "pidfile",          required_argument, nullptr, 'p' },
+      { "errfile",          required_argument, nullptr, 'e' }
     };
     int opt_index( 0 );
     int opt( getopt_long( argc, argv, "", long_options, &opt_index ) );
     while ( opt != -1 ) {
       switch ( opt ) {
-        case 'c' : connection_string = optarg; break;
-        case 'd' : db = optarg; break;
-        case 'i' : input_collection = optarg; break;
+        case 'H' : host = optarg; break;
+        case 'P' : port = atoi( optarg ); break;
+        case 'D' : db = optarg; break;
+        case 'I' : input_collection = optarg; break;
         case 'p' : pidfname = optarg; break;
         case 'e' : errlogfname = optarg; break;
         default :
@@ -103,16 +107,14 @@ int main( int argc, char *argv[] )
     } // wend
     switch ( command[2] ) {
       case 'a' : // start
-        runner::start( configfname, pidfname, errlogfname,
-                       connection_string, db, input_collection );
+        runner::start( configfname, pidfname, errlogfname, host, port, db, input_collection );
         break;
       case 'o' : // stop
         runner::stop( pidfname );
         break;
       case 's' : // restart
         runner::stop( pidfname );
-        runner::start( configfname, pidfname, errlogfname,
-                       connection_string, db, input_collection );
+        runner::start( configfname, pidfname, errlogfname, host, port, db, input_collection );
         break;
     } // esac
     return 0;
