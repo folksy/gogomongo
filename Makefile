@@ -22,7 +22,7 @@ cuke : bin/logserver
 wip : bin/logserver
 	bundle exec cucumber -p wip
 
-src/logserver.o : src/b23/file.h
+src/logserver.o : src/b23/file.h src/fhq/log_server.h
 
 bin/logserver : src/logserver.o
 	$(CXX) -o $@ $+ $(LDFLAGS)

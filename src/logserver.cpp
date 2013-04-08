@@ -1,4 +1,5 @@
 #include "b23/file.h"
+#include "fhq/log_server.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -19,6 +20,7 @@
 namespace runner {
   using namespace std;
   using boost::property_tree::ptree;
+  typedef fhq::LogServer::configs_t configs_t;
 
   void start( const string &configfname, const string &pidfname, const string &errlogfname,
               const string &connection_string, const string &db, const string &input_collection )
@@ -34,7 +36,7 @@ namespace runner {
     b23::file::overwriter_t( pidfname ) << pid;
     ptree pt;
     read_json( configfname, pt );
-    map<string, pair<string, vector<string>>> configs;
+    configs_t configs;
     for ( const auto &processor : pt.get_child( "processors" ) ) {
       string name( processor.second.get<string>( "name" ) );
       string ns( processor.second.get<string>( "ns" ) );
@@ -43,7 +45,7 @@ namespace runner {
         pdescs.push_back( pdesc.second.data() );
       configs[name] = { ns, pdescs };
     }
-    throw runtime_error( "runner::start( ... ) not implemented." );
+    fhq::LogServer( connection_string, db, input_collection, configs, errlogfname )();
   }
 
   void stop( const string &pidfname )
