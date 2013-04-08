@@ -2,7 +2,8 @@
   "processors" : [
     {
       "name" : "simple",
-      "ns" : "cpplscuke.simple_events"
+      "ns" : "cpplscuke.simple_events",
+      "processors" : []
     },
     {
       "name" : "time",
