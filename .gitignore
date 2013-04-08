@@ -1,5 +1,6 @@
 *.o
 bin/logserver
+test/test_runner
 log/*.log
 lib/*.a
 gtest
