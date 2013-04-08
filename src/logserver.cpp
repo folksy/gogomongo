@@ -1,3 +1,5 @@
+#include "b23/file.h"
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -14,43 +16,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-namespace file {
-  using namespace std;
-
-  template <ios_base::openmode M>
-    class Writer
-    {
-    public:
-      Writer( const string &fname ) : __file( fname, M ) {}
-      ~Writer() { if ( __file.is_open() ) __file.close(); }
-      template <typename T>
-        ostream & operator << ( const T &obj )
-        {
-          return __file << obj;
-        }
-    private:
-      ofstream __file;
-    };
-
-  class Reader
-  {
-  public:
-    Reader( const string &fname ) : __file( fname, ios_base::in ) {}
-    ~Reader() { if ( __file.is_open() ) __file.close(); }
-    template <typename T>
-      istream & operator >> ( T &obj )
-      {
-        return __file >> obj;
-      }
-  private:
-    ifstream __file;
-  };
-
-  typedef Writer<ios_base::out | ios_base::app> appender_t;
-  typedef Writer<ios_base::out | ios_base::trunc> overwriter_t;
-  typedef Reader reader_t;
-}
-
 namespace runner {
   using namespace std;
   using boost::property_tree::ptree;
@@ -66,7 +31,7 @@ namespace runner {
          << "\tDatabase:\t\t" << db << endl
          << "\tInput collection:\t" << input_collection << endl;
     pid_t pid( getpid() );
-    file::overwriter_t( pidfname ) << pid;
+    b23::file::overwriter_t( pidfname ) << pid;
     ptree pt;
     read_json( configfname, pt );
     map<string, pair<string, vector<string>>> configs;
@@ -84,10 +49,10 @@ namespace runner {
   void stop( const string &pidfname )
   {
     pid_t pid;
-    file::reader_t( pidfname ) >> pid;
+    b23::file::reader_t( pidfname ) >> pid;
     kill( pid, SIGKILL );
     remove( pidfname.c_str() );
-    throw runtime_error( "runner::stop( ... ) not implemented." );
+    cout << "Log server stopped." << endl;
   }
 }
 
@@ -150,7 +115,7 @@ int main( int argc, char *argv[] )
     } // esac
     return 0;
   } catch ( const std::exception &e ) {
-    file::appender_t( "log/errors.log" ) << "Failed with: " << e.what() << "\n";
+    b23::file::appender_t( "log/errors.log" ) << "Failed with: " << e.what() << "\n";
     std::cerr << "Failed with: " << e.what() << std::endl;
     return 1;
   }

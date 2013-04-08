@@ -2,7 +2,7 @@ Feature: Logging
   I want to be able to send log entries to the service
   And see them processed to structured records
   And be able to configure further smart processing on different kinds of records
-
+@wip
   @log @simple
   Scenario: Logging simple events
     Given the logging service is running

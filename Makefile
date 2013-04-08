@@ -1,6 +1,6 @@
 RM  := rm -f
 
-INCLUDE_DIRS := include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
+INCLUDE_DIRS := src include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
 CXXFLAGS      = -std=c++11 -Wall -g $(addprefix -I,$(INCLUDE_DIRS))
 SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
@@ -11,13 +11,18 @@ LD_LIBRARY_PATH += /usr/local/lib
 
 all : bin/logserver
 
-.PHONY : all clean cuke
+.PHONY : all clean cuke wip
 
 clean :
 	$(RM) $(CLEANLIST)
 
 cuke : bin/logserver
 	bundle exec cucumber
+
+wip : bin/logserver
+	bundle exec cucumber -p wip
+
+src/logserver.o : src/b23/file.h
 
 bin/logserver : src/logserver.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
