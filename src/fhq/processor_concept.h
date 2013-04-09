@@ -6,6 +6,7 @@
 namespace fhq {
   using namespace std;
   using namespace mongo;
+  using std::shared_ptr;
 
   class processor_c
   {

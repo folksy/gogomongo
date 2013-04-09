@@ -14,15 +14,15 @@ namespace fhq {
   using configs_t = map<string, config_t>;
   using processors_t = map<string, pair<string, processor_t>>;
 
-  class LogServer
+  class LogService
   {
   public:
-    LogServer( const string &host, const int port, const string &ns,
+    LogService( const string &host, const int port, const string &ns,
                const configs_t &configs, const string &errlogfname )
       : __host( host ), __port( port ), __ns( ns ), __errlogfname( errlogfname )
     {}
-    LogServer( const LogServer & ) = delete;
-    LogServer( LogServer && ) = delete;
+    LogService( const LogService & ) = delete;
+    LogService( LogService && ) = delete;
 
     const string & host() const { return __host; }
     const int port() const { return __port; }
@@ -31,7 +31,7 @@ namespace fhq {
 
     void operator() ()
     {
-      throw runtime_error( "fhq::LogServer::() not implemented." );
+      throw runtime_error( "fhq::LogService::() not implemented." );
       /* DBClientConnection conn( true ); */
       /* conn.connect( HostAndPort( __host, __port ) ); */
       /* Query query = QUERY( "message" << BSON( "$exists" << true ) ) */
