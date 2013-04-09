@@ -15,18 +15,18 @@ Feature: Logging
   Scenario: Logging events with a time processor
     Given Pending
 
-  @log @ruby @object @safe
-  Scenario: Logging events with a ruby-object-safe processor
-    Given Pending
+  # @log @ruby @object @safe
+  # Scenario: Logging events with a ruby-object-safe processor
+  #   Given Pending
 
-  @log @unlabelled @hashes
-  Scenario: Logging events with a hashes processor
-    Given Pending
+  # @log @unlabelled @hashes
+  # Scenario: Logging events with a hashes processor
+  #   Given Pending
 
-  @log @labelled @hashes
-  Scenario: Logging events with a labelled hashes processor
-    Given Pending
+  # @log @labelled @hashes
+  # Scenario: Logging events with a labelled hashes processor
+  #   Given Pending
 
-  @log @preserve_original_message
-  Scenario: Logging events with a preserve original message processor
-    Given Pending
+  # @log @preserve_original_message
+  # Scenario: Logging events with a preserve original message processor
+  #   Given Pending

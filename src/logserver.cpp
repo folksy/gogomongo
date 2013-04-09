@@ -19,11 +19,10 @@
 namespace runner {
   using namespace std;
   using boost::property_tree::ptree;
-  typedef fhq::LogServer::configs_t configs_t;
+  using fhq::configs_t;
 
   void start( const string &configfname, const string &pidfname, const string &errlogfname,
-              const string &host, const int port,
-              const string &db, const string &input_collection )
+              const string &host, const int port, const string &ns )
   {
     cout << "Log server starting with:" << endl
          << "\tConfig filename:\t" << configfname << endl
@@ -31,8 +30,7 @@ namespace runner {
          << "\tError log filename:\t" << errlogfname << endl
          << "\tHost:\t\t" << host << endl
          << "\tPort:\t\t" << port << endl
-         << "\tDatabase:\t\t" << db << endl
-         << "\tInput collection:\t" << input_collection << endl;
+         << "\tNamespace:\t\t" << ns << endl;
     pid_t pid( getpid() );
     b23::file::overwriter_t( pidfname ) << pid;
     ptree pt;
@@ -46,7 +44,7 @@ namespace runner {
         pdescs.push_back( pdesc.second.data() );
       configs[name] = { ns, pdescs };
     }
-    fhq::LogServer( host, db, port, input_collection, configs, errlogfname )();
+    fhq::LogServer( host, port, ns, configs, errlogfname )();
   }
 
   void stop( const string &pidfname )
@@ -74,18 +72,16 @@ int main( int argc, char *argv[] )
     std::string configfname( command.compare( "stop" ) == 0 ? "N/A" : argv[2] );
     std::string
       host( "localhost" ),
-      db( "logserver" ),
-      input_collection( "_lsevents" ),
+      ns( "logserver._lsevents" ),
       pidfname( "pids/logserver.pid" ),
       errlogfname( "log/errors.log" );
     int port( 27017 );
     static struct option long_options[] = {
-      { "host",             required_argument, nullptr, 'H' },
-      { "port",             required_argument, nullptr, "P" },
-      { "db",               required_argument, nullptr, 'D' },
-      { "input-collection", required_argument, nullptr, 'I' },
-      { "pidfile",          required_argument, nullptr, 'p' },
-      { "errfile",          required_argument, nullptr, 'e' }
+      { "host",    required_argument, nullptr, 'H' },
+      { "port",    required_argument, nullptr, 'P' },
+      { "ns",      required_argument, nullptr, 'N' },
+      { "pidfile", required_argument, nullptr, 'p' },
+      { "errfile", required_argument, nullptr, 'e' }
     };
     int opt_index( 0 );
     int opt( getopt_long( argc, argv, "", long_options, &opt_index ) );
@@ -93,8 +89,7 @@ int main( int argc, char *argv[] )
       switch ( opt ) {
         case 'H' : host = optarg; break;
         case 'P' : port = atoi( optarg ); break;
-        case 'D' : db = optarg; break;
-        case 'I' : input_collection = optarg; break;
+        case 'N' : ns = optarg; break;
         case 'p' : pidfname = optarg; break;
         case 'e' : errlogfname = optarg; break;
         default :
@@ -107,14 +102,14 @@ int main( int argc, char *argv[] )
     } // wend
     switch ( command[2] ) {
       case 'a' : // start
-        runner::start( configfname, pidfname, errlogfname, host, port, db, input_collection );
+        runner::start( configfname, pidfname, errlogfname, host, port, ns );
         break;
       case 'o' : // stop
         runner::stop( pidfname );
         break;
       case 's' : // restart
         runner::stop( pidfname );
-        runner::start( configfname, pidfname, errlogfname, host, port, db, input_collection );
+        runner::start( configfname, pidfname, errlogfname, host, port, ns );
         break;
     } // esac
     return 0;

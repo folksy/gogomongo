@@ -1,4 +1,6 @@
 *.o
+*.d
+*.dpp
 bin/logserver
 test/test_runner
 log/*.log
