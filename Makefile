@@ -55,6 +55,5 @@ endif
 
 %.dpp : %.cpp
 	$(CXXMAKEDEPS) $< > $*._dpp && \
-	echo $* && \
 	$(SED) 's,$(*F)\.o[ :]*,$*.o $@ : ,g' < $*._dpp > $@ && \
 	$(RM) $*._dpp
