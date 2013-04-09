@@ -36,7 +36,6 @@ bin/logserver : MACROS = -DPROTECTED=private -DVIRTUAL=""
 bin/logserver : src/logserver.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
 
-test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : SRC += $(TSRC)
 test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include
 test/test_runner %_test.o : MACROS = -DPROTECTED=protected -DVIRTUAL=virtual
 
@@ -50,7 +49,7 @@ gtest/src/gtest-all.cc :
 	svn checkout http://googletest.googlecode.com/svn/trunk/ gtest
 
 ifneq "$(MAKECMDGOALS)" "clean"
-  -include $(subst .cpp,.dpp,$(SRC))
+  -include $(subst .cpp,.dpp,$(SRC)) $(subst .cpp,.dpp,$(TSRC))
 endif
 
 %.dpp : %.cpp

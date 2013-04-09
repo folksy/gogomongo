@@ -1,5 +1,5 @@
 #include "b23/file.h"
-#include "fhq/log_server.h"
+#include "fhq/log_service.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -44,7 +44,7 @@ namespace runner {
         pdescs.push_back( pdesc.second.data() );
       configs[name] = { ns, pdescs };
     }
-    fhq::LogServer( host, port, ns, configs, errlogfname )();
+    fhq::LogService( host, port, ns, configs, errlogfname )();
   }
 
   void stop( const string &pidfname )

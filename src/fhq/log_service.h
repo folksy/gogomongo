@@ -5,12 +5,14 @@
 #include <string>
 #include <stdexcept>
 #include "mongo/client/dbclient.h"
+#include "fhq/processor_concept.h"
 
 namespace fhq {
   using namespace std;
   using namespace mongo;
   using config_t = pair<string, vector<string>>;
   using configs_t = map<string, config_t>;
+  using processors_t = map<string, pair<string, processor_t>>;
 
   class LogServer
   {
@@ -53,6 +55,12 @@ namespace fhq {
       /*   query = QUERY( "message" << BSON( "$exists" << true ) ) */
       /*     .hint( BSON( "$natural" << 1 ) ); */
       /* } // wend */
+    }
+
+  PROTECTED:
+    VIRTUAL processors_t & _generate_processors( const configs_t &configs ) const
+    {
+      throw runtime_error( "LogService::_generate_processors( ... ) not implemented." );
     }
     
   private:
