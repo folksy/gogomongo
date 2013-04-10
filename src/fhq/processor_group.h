@@ -31,13 +31,12 @@ namespace fhq {
     {
       throw runtime_error( "ProcessorGroup( ... ) not implemented." );
     }
+
+  PRIVATE:
+    const vector<processor_t> & processors() const { return __processors; }
+    const string desc() const { return "group"; }
+    
   private:
     vector<processor_t> __processors;
-
-    TEST_ONLY(
-      public:
-      const vector<processor_t> & processors() const { return __processors; }
-      const string desc() const { return "group"; }
-    )
   };
 }

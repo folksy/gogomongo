@@ -13,7 +13,7 @@ namespace {
   using fhq::configs_t;
   using fhq::processors_t;
 
-  namespace log_server_construction {
+  namespace log_service_construction {
     // struct LogServiceMock : public LogService, public CallRecorder
     // {
     //   LogServiceMock( const string &host, const int port, const string &ns,

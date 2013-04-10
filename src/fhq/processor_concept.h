@@ -49,7 +49,7 @@ namespace fhq {
     processor_t & operator= ( processor_t && ) = default;
 
     VIRTUAL void operator() ( BSONObj &obj ) { ( *__p )( obj ); }
-
+    
   private:
     shared_ptr<processor_c> __p;
 

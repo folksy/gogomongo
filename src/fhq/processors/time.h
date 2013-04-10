@@ -14,7 +14,8 @@ namespace fhq {
         throw runtime_error( "fhq::processors::Time( ... ) not implemented." );
       }
 
-      TEST_ONLY( const string desc() const { return "time"; } )
+    PRIVATE:
+      const string desc() const { return "time"; }
     };
   }
 }

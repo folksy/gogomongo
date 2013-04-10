@@ -34,12 +34,6 @@ namespace fhq {
     LogService( const LogService & ) = delete;
     LogService( LogService && ) = delete;
 
-    const string & host() const { return __host; }
-    const int port() const { return __port; }
-    const string & ns() const { return __ns; }
-    const string & errlogfname() const { return __errlogfname; }
-    const processors_t & processors() const { return __processors; }
-
     void operator() ()
     {
       throw runtime_error( "fhq::LogService::() not implemented." );
@@ -67,6 +61,13 @@ namespace fhq {
       /*     .hint( BSON( "$natural" << 1 ) ); */
       /* } // wend */
     }
+
+  PRIVATE:
+    const string & host() const { return __host; }
+    const int port() const { return __port; }
+    const string & ns() const { return __ns; }
+    const string & errlogfname() const { return __errlogfname; }
+    const processors_t & processors() const { return __processors; }
     
   private:
     string __host;
