@@ -2,13 +2,13 @@ RM  := rm -f
 AR  := ar -rv
 SED := sed -e
 
-VPATH = src include
+VPATH = src include test
 
 INCLUDE_DIRS := src include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
 CXXFLAGS      = -std=c++11 -Wall -g $(MACROS) $(addprefix -I,$(INCLUDE_DIRS))
 SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
-TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp)
+TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard test/sanity/*.cpp)
 TOBJ          = $(subst .cpp,.o,$(TSRC))
 EXES         := bin/logserver test/test_runner
 CLEANLIST     = $(OBJ) $(TOBJ) $(EXES) $(wildcard log/*.log) $(subst .o,.dpp,$(OBJ)) $(subst .o,.dpp,$(TOBJ))
@@ -36,7 +36,7 @@ bin/logserver : MACROS = -DPROTECTED=private -DVIRTUAL=""
 bin/logserver : src/logserver.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
 
-test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include
+test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include test
 test/test_runner %_test.o : MACROS = -DPROTECTED=protected -DVIRTUAL=virtual
 
 test/test_runner : $(TOBJ) lib/libgtest.a

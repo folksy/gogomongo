@@ -20,10 +20,11 @@ namespace fhq {
     {
     public:
       processor_w( const T &t ) : __t( t ) {}
+      processor_w( T &&t ) : __t( std::move( t ) ) {}
       processor_w( const processor_w &o ) = default;
       processor_w( processor_w &&o ) = default;
 
-      virtual void operator() ( BSONObj &obj ) { __t.operator() ( obj ); }
+      virtual void operator() ( BSONObj &obj ) { __t( obj ); }
       
     private:
       T __t;
@@ -32,12 +33,18 @@ namespace fhq {
   class processor_t
   {
   public:
+    processor_t() = default;
     template <typename T>
-      processor_t( const T &p ) : __p( make_shared<T>( p ) ) {}
-    processor_t( const processor_t &o ) = default;
-    processor_t( processor_t &&o ) = default;
+      processor_t( const T &p ) : __p( make_shared<processor_w<T>>( p ) ) {}
+    template <typename T>
+      processor_t( T &&p ) : __p( make_shared<processor_w<T>>( std::move( p ) ) ) {}
+    processor_t( const processor_t & ) = default;
+    processor_t( processor_t && ) = default;
 
-    VIRTUAL void operator() ( BSONObj &obj ) { __p->operator() ( obj ); }
+    processor_t & operator= ( const processor_t & ) = default;
+    processor_t & operator= ( processor_t && ) = default;
+
+    VIRTUAL void operator() ( BSONObj &obj ) { ( *__p )( obj ); }
     
   private:
     shared_ptr<processor_c> __p;

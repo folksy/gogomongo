@@ -3,9 +3,11 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 #include <stdexcept>
 #include "mongo/client/dbclient.h"
 #include "fhq/processor_concept.h"
+#include "fhq/processor_group.h"
 
 namespace fhq {
   using namespace std;
@@ -19,7 +21,8 @@ namespace fhq {
   public:
     LogService( const string &host, const int port, const string &ns,
                const configs_t &configs, const string &errlogfname )
-      : __host( host ), __port( port ), __ns( ns ), __errlogfname( errlogfname )
+      : __host( host ), __port( port ), __ns( ns ),
+        __configs( configs ), __errlogfname( errlogfname )
     {}
     LogService( const LogService & ) = delete;
     LogService( LogService && ) = delete;
@@ -27,6 +30,7 @@ namespace fhq {
     const string & host() const { return __host; }
     const int port() const { return __port; }
     const string & ns() const { return __ns; }
+    const configs_t & configs() const { return __configs; }
     const string & errlogfname() const { return __errlogfname; }
 
     void operator() ()
@@ -58,15 +62,33 @@ namespace fhq {
     }
 
   PROTECTED:
-    VIRTUAL processors_t & _generate_processors( const configs_t &configs ) const
+    VIRTUAL processors_t & _processors()
     {
-      throw runtime_error( "LogService::_generate_processors( ... ) not implemented." );
+      throw runtime_error( "LogService::_processors( ... ) not implemented." );
+      if ( __processors == nullptr ) {
+        __processors = make_shared<processors_t>();
+        for ( const auto &kv : __configs ) {
+          ProcessorGroup pg;
+          for ( const auto &desc : kv.second.second ) {
+            if ( desc.compare( "time" ) == 0 ) {
+              // TODO
+            } else if ( desc.compare( "original-message" ) == 0 ) {
+              // TODO
+            } else
+              throw runtime_error( "Unrecognised processor desc" );
+          } // descs
+          ( *__processors )[kv.first] = { kv.second.first, std::move( pg ) };
+        } // __configs
+      }
+      return *__processors;
     }
     
   private:
     string __host;
     int __port;
     string __ns;
+    configs_t __configs;
     string __errlogfname;
+    shared_ptr<processors_t> __processors;
   };
 }
