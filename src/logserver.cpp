@@ -72,7 +72,7 @@ int main( int argc, char *argv[] )
     std::string configfname( command.compare( "stop" ) == 0 ? "N/A" : argv[2] );
     std::string
       host( "localhost" ),
-      ns( "logserver._lsevents" ),
+      ns( "logserver.lsevents" ),
       pidfname( "pids/logserver.pid" ),
       errlogfname( "log/errors.log" );
     int port( 27017 );

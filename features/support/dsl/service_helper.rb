@@ -5,7 +5,7 @@ module ServiceHelper
     
     def initialize
       cmd = "bin/logserver start features/configs/cuke.json" +
-        " --ns cpplscuke._lsevents" +
+        " --ns cpplscuke.lsevents" +
         " --pidfile pids/cukerunner.pid"
       puts cmd
       @process = IO.popen( cmd )

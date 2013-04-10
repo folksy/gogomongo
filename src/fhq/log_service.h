@@ -36,30 +36,35 @@ namespace fhq {
 
     void operator() ()
     {
-      throw runtime_error( "fhq::LogService::() not implemented." );
-      /* DBClientConnection conn( true ); */
-      /* conn.connect( HostAndPort( __host, __port ) ); */
-      /* Query query = QUERY( "message" << BSON( "$exists" << true ) ) */
-      /*   .hint( BSON( "$natural" << 1 ) ); */
-      /* while ( true ) { */
-      /*   auto cursor( conn.query( __ns, query, 0, 0, 0, */
-      /*                            QueryOption_CursorTailable | QueryOption_AwaitData ) ); */
-      /*   while ( true ) { */
-      /*     if ( ! cursor->more() ) { */
-      /*       if ( cursor->isDead() ) */
-      /*         break; */
-      /*       else */
-      /*         continue; */
-      /*     } */
-      /*     BSONObj obj = cursor->next(); */
-      /*     throw runtime_error( "TODO -- remove message from original" ); */
-      /*     throw runtime_error( "TODO -- get processor based on object logname" ); */
-      /*     throw runtime_error( "TODO -- dispatch to processor" ); */
-      /*     throw runtime_error( "TODO -- save processed obj to processor ns" ); */
-      /*   } // wend */
-      /*   query = QUERY( "message" << BSON( "$exists" << true ) ) */
-      /*     .hint( BSON( "$natural" << 1 ) ); */
-      /* } // wend */
+      DBClientConnection conn( true );
+      conn.connect( HostAndPort( host(), port() ) );
+      Query query = QUERY( "message" << BSON( "$exists" << true ) )
+        .hint( BSON( "$natural" << 1 ) );
+      while ( true ) {
+        auto cursor( conn.query( ns(), query, 0, 0, 0,
+                                 QueryOption_CursorTailable | QueryOption_AwaitData ) );
+        while ( true ) {
+          if ( ! cursor->more() ) {
+            if ( cursor->isDead() )
+              break;
+            else
+              continue;
+          }
+          BSONObj obj = cursor->next();
+          throw runtime_error( "TODO -- remove message from original" );
+          processor_t processor;
+          try {
+            auto ns_and_proc( __processors.at( obj["logid"] ) );
+            ns_and_proc.second( obj );
+            throw runtime_error( "TODO -- save processed obj to processor ns" );
+          } catch ( const out_of_range &e ) {
+            b23::file::appender_t( errlogfname() )
+              << "Unhandled logid: " << obj["logid"] << "\n";
+          }
+        } // wend
+        query = QUERY( "message" << BSON( "$exists" << true ) )
+          .hint( BSON( "$natural" << 1 ) );
+      } // wend
     }
 
   PRIVATE:
