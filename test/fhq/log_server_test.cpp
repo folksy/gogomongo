@@ -35,7 +35,7 @@ namespace {
       string __host = "localheist";
       int __port = 12345;
       string __ns = "somedb.somecollection";
-      configs_t __configs = { { "moose", { "more-moose", { "too", "many", "mooses" } } } };
+      configs_t __configs = { { "thename", { "the.namespace", { "time" } } } };
       string __errlogfname = "some/error/file.log";
       log_server_t __server;
 
@@ -62,16 +62,19 @@ namespace {
       EXPECT_EQ( __ns, __server.ns() );
     }
 
-    // Should store the configs
-    TEST_F( LogServiceConstructionTest,
-            ShouldStoreTheConfigs ) {
-      EXPECT_EQ( __configs, __server.configs() );
-    }
-
     // Should store the error log filename
     TEST_F( LogServiceConstructionTest,
             ShouldStoreTheErrorLogFilename ) {
       EXPECT_EQ( __errlogfname, __server.errlogfname() );
+    }
+
+    // Should generate processors to match passed-in configs
+    TEST_F( LogServiceConstructionTest,
+            ShouldGenerateProcessorsToMatchPassedInConfigs ) {
+      processors_t p( const_cast<processors_t &>( __server.processors() ) );
+      EXPECT_EQ( static_cast<size_t>( 1 ), p.size() );
+      EXPECT_EQ( "the.namespace", p["thename"].first );
+      EXPECT_EQ( "group", p["thename"].second.desc() );
     }
     
   }

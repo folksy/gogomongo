@@ -21,17 +21,24 @@ namespace fhq {
   public:
     LogService( const string &host, const int port, const string &ns,
                const configs_t &configs, const string &errlogfname )
-      : __host( host ), __port( port ), __ns( ns ),
-        __configs( configs ), __errlogfname( errlogfname )
-    {}
+      : __host( host ), __port( port ), __ns( ns ), __errlogfname( errlogfname )
+    {
+      for ( const auto &kv : configs ) {
+        ProcessorGroup pg;
+        for ( const auto &desc : kv.second.second )
+          pg << desc;
+        __processors[kv.first] = { kv.second.first, std::move( pg ) };
+      }
+    }
+    
     LogService( const LogService & ) = delete;
     LogService( LogService && ) = delete;
 
     const string & host() const { return __host; }
     const int port() const { return __port; }
     const string & ns() const { return __ns; }
-    const configs_t & configs() const { return __configs; }
     const string & errlogfname() const { return __errlogfname; }
+    const processors_t & processors() const { return __processors; }
 
     void operator() ()
     {
@@ -60,28 +67,6 @@ namespace fhq {
       /*     .hint( BSON( "$natural" << 1 ) ); */
       /* } // wend */
     }
-
-  PROTECTED:
-    VIRTUAL processors_t & _processors()
-    {
-      throw runtime_error( "LogService::_processors( ... ) not implemented." );
-      if ( __processors == nullptr ) {
-        __processors = make_shared<processors_t>();
-        for ( const auto &kv : __configs ) {
-          ProcessorGroup pg;
-          for ( const auto &desc : kv.second.second ) {
-            if ( desc.compare( "time" ) == 0 ) {
-              // TODO
-            } else if ( desc.compare( "original-message" ) == 0 ) {
-              // TODO
-            } else
-              throw runtime_error( "Unrecognised processor desc" );
-          } // descs
-          ( *__processors )[kv.first] = { kv.second.first, std::move( pg ) };
-        } // __configs
-      }
-      return *__processors;
-    }
     
   private:
     string __host;
@@ -89,6 +74,6 @@ namespace fhq {
     string __ns;
     configs_t __configs;
     string __errlogfname;
-    shared_ptr<processors_t> __processors;
+    processors_t __processors;
   };
 }

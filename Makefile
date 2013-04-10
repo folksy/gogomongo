@@ -30,14 +30,18 @@ wip : bin/logserver
 	bundle exec cucumber -p wip
 
 test : test/test_runner
+  ifdef TF
+	test/test_runner --gtest_filter=$(TF)
+  else
 	test/test_runner
+  endif
 
-bin/logserver : MACROS = -DPROTECTED=private -DVIRTUAL=""
+bin/logserver : MACROS = -DPROTECTED=private -DVIRTUAL="" -D"TEST_ONLY(n)=/* n */"
 bin/logserver : src/logserver.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
 
 test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include test
-test/test_runner %_test.o : MACROS = -DPROTECTED=protected -DVIRTUAL=virtual
+test/test_runner %_test.o : MACROS = -DPROTECTED=protected -DVIRTUAL=virtual -D"TEST_ONLY(n)=n"
 
 test/test_runner : $(TOBJ) lib/libgtest.a
 	$(CXX) -o $@ $+ $(LDFLAGS) -pthread
