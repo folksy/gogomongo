@@ -31,7 +31,11 @@ namespace fhq {
     private:
       T __t;
 
-      TEST_ONLY( public: virtual const string desc() const { return __t.desc(); } )
+      TEST_ONLY(
+      public:
+        virtual const string desc() const { return __t.desc(); }
+        T & t() { return __t; }
+      )
     };
 
   class processor_t
@@ -53,6 +57,10 @@ namespace fhq {
   private:
     shared_ptr<processor_c> __p;
 
-    TEST_ONLY( public: const string desc() const { return __p->desc(); } )
+    TEST_ONLY(
+    public:
+      const string desc() const { return __p->desc(); }
+      processor_c & p() { return *__p; }
+    )
   };
 }

@@ -34,6 +34,20 @@ namespace test {
         return false;
       }
     }
+
+    template <typename T>
+      const bool __called( const string &function_name, const T &desc )
+      {
+        try {
+          auto args( __calls.at( function_name ) );
+          if ( args.size() != 1 ) return false;
+          stringstream buf;
+          buf << desc;
+          return args[0].compare( buf.str() ) == 0;
+        } catch ( const out_of_range &e ) {
+          return false;
+        }
+      }
   };
   
 }

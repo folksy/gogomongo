@@ -18,6 +18,8 @@ namespace fhq {
   class ProcessorGroup
   {
   public:
+    VIRTUAL ~ProcessorGroup() {}
+    
     ProcessorGroup & operator << ( const string &desc )
     {
       if ( desc.compare( "time" ) == 0 )
@@ -27,16 +29,20 @@ namespace fhq {
       return *this;
     }
     
-    void operator() ( BSONObj &obj )
+    VIRTUAL void operator() ( BSONObj &obj )
     {
-      throw runtime_error( "ProcessorGroup( ... ) not implemented." );
+      for ( auto &processor : __processors )
+        processor( obj );
     }
-
-  PRIVATE:
-    const vector<processor_t> & processors() const { return __processors; }
-    const string desc() const { return "group"; }
     
-  private:
+  PRIVATE:
     vector<processor_t> __processors;
+
+    TEST_ONLY(
+    public:
+      const vector<processor_t> & processors() const { return __processors; }
+      const string desc() const { return "group"; }
+      void add_processor( const processor_t &p ) { __processors.push_back( p ); }
+    ) // TEST_ONLY
   };
 }
