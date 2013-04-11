@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include "mongo/client/dbclient.h"
+#include "b23/file.h"
 #include "fhq/processor_concept.h"
 #include "fhq/processor_group.h"
 
