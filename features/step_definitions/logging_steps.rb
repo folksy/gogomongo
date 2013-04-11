@@ -4,30 +4,28 @@ Given( /^the logging service is running$/ ) do
   run_service
 end
 
-When( /^I send simple events to the service$/ ) do
-  client = Mongo::MongoClient.from_uri( "mongodb://localhost" )
-  db = client.db( CONFIG[:db] )
-  collection = db.collection( CONFIG[:collection] )
-  origins = [ "server01", "server02", "server03" ]
-  levels = [ "debug", "warn", "error" ]
-  messages = [ "Everything is broked and fecked up",
-               "Mysterious beards descended from a preternaturally bright cosmos",
-               "Fire! Fire! Oh, wait. Sorry. I mean 404! 404!",
-               "Multiline,\nmultiline\nriding through the glen.",
-               "Inexplicable { \"hash\": \"object\" } in message",
-               "Inexplicable, tight {\"hash\":\"object\"} in message",
-               "Ruby-style { \"hash\" => \"object\" } in message",
-               "Tight, Ruby-style {\"hash\"=>\"object\"} in message"
-             ]
-  events = messages.map do |message|
-    { :logid   => "simple",
-      :origin  => origins.shuffle.first,
-      :level   => levels.shuffle.first,
-      :message => message
-    }
-  end
-  split = rand( events.size - 2 ) + 1
-  collection.insert( events[0...split] )
+When( /^I send (simple|time) events to the service$/ ) do |event_type|
+  type = event_type.to_sym
+  @events_in = send_events( type )
   sleep( 0.25 )
-  collection.insert( events[split..-1] )
+  @events_out = processed_events( type )
+end
+
+Then( /^I should see processed records in the database$/ ) do
+  @events_out.size.should == @events_in.size
+end
+
+Then( /^the records should have their original miscellaneous keys and values$/ ) do
+  [ @events_in, @events_out ].transpose.each do |(ein, eout)|
+    ein.keys.each do |key|
+      next if key.is_a?( Symbol )
+      eout[key].should == ein[key]
+    end
+  end
+end
+
+Then( /^the records should have their original message values$/ ) do
+  [ @events_in, @events_out ].transpose.each do |(ein, eout)|
+    eout["message"].should == ein["message"]
+  end
 end
