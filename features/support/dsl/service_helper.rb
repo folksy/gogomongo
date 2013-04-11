@@ -4,9 +4,9 @@ module ServiceHelper
     attr_reader :process
     
     def initialize
-      cmd = "bin/logserver start features/configs/cuke.json" +
-        " --ns cpplscuke.lsevents" +
-        " --pidfile pids/cukerunner.pid"
+      cmd = "bin/logserver start #{ CONFIG[:file] }" +
+        " --ns #{ CONFIG[:ns] }" +
+        " --pidfile #{ CONFIG[:pidfile] }"
       puts cmd
       @process = IO.popen( cmd )
     end
@@ -27,8 +27,8 @@ module ServiceHelper
 
       def stop
         if @_service
-          puts "bin/logserver stop --pidfile pids/cukerunner.pid"
-          puts `bin/logserver stop --pidfile pids/cukerunner.pid`
+          puts "bin/logserver stop --pidfile #{ CONFIG[:pidfile] }"
+          puts `bin/logserver stop --pidfile #{ CONFIG[:pidfile] }`
           @_service.process.close
           @_service = nil
         end

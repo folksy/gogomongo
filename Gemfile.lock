@@ -16,6 +16,7 @@ GEM
     mongo (1.8.4)
       bson (~> 1.8.4)
     multi_json (1.7.2)
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -24,3 +25,4 @@ DEPENDENCIES
   bson_ext
   cucumber
   mongo
+  yajl-ruby
