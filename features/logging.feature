@@ -10,14 +10,15 @@ Feature: Logging
     Then I should see processed records in the database
     And the records should have their original miscellaneous keys and values
     And the records should have their original message values
-@wip
+
   @log @time
   Scenario: Logging events with a time processor
     Given the logging service is running
     When I send time events to the service
     Then I should see processed records in the database
     And the records should have their original values, bar time
-    And the records should have a new time value
+    And the records without an original time value should have a new one
+    But the records with original time values should have kept them
     And the records should have their original message values
 
   # @log @ruby @object @safe

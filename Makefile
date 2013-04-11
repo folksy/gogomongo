@@ -8,7 +8,7 @@ INCLUDE_DIRS := src include /usr/local/include /opt/local/include /home/ubuntu/w
 CXXFLAGS      = -std=c++11 -Wall -g $(MACROS) $(addprefix -I,$(INCLUDE_DIRS))
 SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
-TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard test/sanity/*.cpp)
+TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard test/sanity/*.cpp) $(wildcard test/fhq/processors/*.cpp)
 TOBJ          = $(subst .cpp,.o,$(TSRC))
 EXES         := bin/logserver test/test_runner
 CLEANLIST     = $(OBJ) $(TOBJ) $(EXES) $(wildcard log/*.log) $(subst .o,.dpp,$(OBJ)) $(subst .o,.dpp,$(TOBJ))

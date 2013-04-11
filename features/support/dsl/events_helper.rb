@@ -24,6 +24,7 @@ module EventsHelper
         "level"   => levels.shuffle.first,
         "message" => message
       }
+        .merge( rand( 3 ) == 0 ? { "time" => Time.now } : {} )
     end
     split = rand( events.size - 2 ) + 1
     collection.insert( events[0...split] )

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fhq/processor_concept.h"
+#include <string>
 
 namespace fhq {
   namespace processors {
@@ -11,7 +12,15 @@ namespace fhq {
     public:
       void operator() ( BSONObj &obj )
       {
-        throw runtime_error( "fhq::processors::Time( ... ) not implemented." );
+        if ( ! obj.hasField( "time" ) ) {
+          BSONObjBuilder b;
+          for ( auto i( obj.begin() ) ; i.more() ; ) {
+            auto e( i.next() );
+            b << e;
+          }
+          b << "time" << DATENOW;
+          obj = b.obj();
+        }
       }
 
     PRIVATE:
