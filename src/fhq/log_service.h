@@ -10,6 +10,9 @@
 #include "fhq/processor_concept.h"
 #include "fhq/processor_group.h"
 
+#define ERROR(f,n) b23::file::appender_t( f ) << n << "\n";
+#define DEBUG(n) b23::file::appender_t( "log/debug.log" ) << n << "\n";
+
 namespace fhq {
   using namespace std;
   using namespace mongo;
@@ -52,15 +55,15 @@ namespace fhq {
               continue;
           }
           BSONObj obj = cursor->next();
-          throw runtime_error( "TODO -- remove message from original" );
-          processor_t processor;
+          conn.update( ns(),
+                       BSON( "_id" << obj["_id"] ),
+                       BSON( "$unset" << BSON( "message" << true ) ) );
           try {
-            auto ns_and_proc( __processors.at( obj["logid"] ) );
+            auto ns_and_proc( __processors.at( obj.getStringField( "logid" ) ) );
             ns_and_proc.second( obj );
             throw runtime_error( "TODO -- save processed obj to processor ns" );
           } catch ( const out_of_range &e ) {
-            b23::file::appender_t( errlogfname() )
-              << "Unhandled logid: " << obj["logid"] << "\n";
+            ERROR( errlogfname(), "Unhandled logid: " << obj["logid"] );
           }
         } // wend
         query = QUERY( "message" << BSON( "$exists" << true ) )
