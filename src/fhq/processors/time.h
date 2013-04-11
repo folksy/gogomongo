@@ -14,10 +14,8 @@ namespace fhq {
       {
         if ( ! obj.hasField( "time" ) ) {
           BSONObjBuilder b;
-          for ( auto i( obj.begin() ) ; i.more() ; ) {
-            auto e( i.next() );
-            b << e;
-          }
+          for ( auto i( obj.begin() ) ; i.more() ; )
+            b << i.next();
           b << "time" << DATENOW;
           obj = b.obj();
         }
