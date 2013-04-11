@@ -9,3 +9,7 @@ CONFIG = {
 
 CONFIG[:ns] = "#{ CONFIG[:db] }.#{ CONFIG[:collection] }"
 CONFIG[:config] = Yajl::load( File.read( CONFIG[:file] ) )
+
+Before do
+  `mongo features/config/createdb.js`
+end

@@ -61,7 +61,7 @@ namespace fhq {
           try {
             auto ns_and_proc( __processors.at( obj.getStringField( "logid" ) ) );
             ns_and_proc.second( obj );
-            throw runtime_error( "TODO -- save processed obj to processor ns" );
+            conn.insert( ns_and_proc.first, obj );
           } catch ( const out_of_range &e ) {
             ERROR( errlogfname(), "Unhandled logid: " << obj["logid"] );
           }
