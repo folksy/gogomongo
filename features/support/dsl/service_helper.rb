@@ -6,7 +6,8 @@ module ServiceHelper
     def initialize
       cmd = "bin/gogomongo start #{ CONFIG[:file] }" +
         " --ns #{ CONFIG[:ns] }" +
-        " --pidfile #{ CONFIG[:pidfile] }"
+        " --pidfile #{ CONFIG[:pidfile] }" +
+        " --errfile #{ CONFIG[:errfile] }"
       puts cmd
       @process = IO.popen( cmd )
     end

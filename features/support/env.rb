@@ -4,7 +4,8 @@ CONFIG = {
   :file       => "features/config/cuke.json",
   :db         => "cpplscuke",
   :collection => "lsevents",
-  :pidfile    => "features/pids/cukerunner.pid"
+  :pidfile    => "features/pids/cukerunner.pid",
+  :errfile    => "log/errors.log"
 }
 
 CONFIG[:ns] = "#{ CONFIG[:db] }.#{ CONFIG[:collection] }"
