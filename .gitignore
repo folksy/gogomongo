@@ -1,6 +1,7 @@
 *.o
 *.d
 *.dpp
+*._dpp
 bin/gogomongo
 test/test_runner
 log/*.log

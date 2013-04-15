@@ -21,7 +21,7 @@ CXXMAKEDEPS   = $(CXX) -M $(CXXFLAGS) $(CPPFLAGS)
 
 all : bin/gogomongo
 
-.PHONY : all clean cuke wip install
+.PHONY : all clean cuke wip test install
 
 clean :
 	$(RM) $(CLEANLIST)
