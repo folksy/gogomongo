@@ -1,6 +1,9 @@
-RM  := rm -f
-AR  := ar -rv
-SED := sed -e
+RM    := rm -f
+CP    := cp
+MKDIR := mkdir -p
+AR    := ar -rv
+SED   := sed -e
+MONGO := mongo
 
 VPATH = src include test
 
@@ -18,7 +21,7 @@ CXXMAKEDEPS   = $(CXX) -M $(CXXFLAGS) $(CPPFLAGS)
 
 all : bin/gogomongo
 
-.PHONY : all clean cuke wip
+.PHONY : all clean cuke wip install
 
 clean :
 	$(RM) $(CLEANLIST)
@@ -35,6 +38,13 @@ test : test/test_runner
   else
 	test/test_runner
   endif
+
+install :
+	$(CP) bin/gogomongo /usr/local/bin/gogomongo      && \
+	$(MKDIR) /etc/gogomongo                           && \
+	$(CP) config/conf.json /etc/gogomongo/conf.json   && \
+	$(CP) config/builddb.js /etc/gogomongo/builddb.js && \
+	$(MONGO) /etc/gogomongo/builddb.js
 
 bin/gogomongo : MACROS = -DPRIVATE=private -DPROTECTED=protected -DVIRTUAL="" -D"TEST_ONLY(n)=/* n */"
 bin/gogomongo : src/gogomongo.o

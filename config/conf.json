@@ -1,0 +1,14 @@
+{
+  "processors": [
+    {
+      "name" : "folksylog",
+      "ns" : "folksylog.events",
+      "processors" : [ "time" ]
+    },
+    {
+      "name" : "folksyerr",
+      "ns" : "folksylog.errors",
+      "processors" : []
+    }
+  ]
+}

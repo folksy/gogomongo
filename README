@@ -14,3 +14,15 @@ $ sudo gem install bundler --no-rdoc --no-ri
 Add the lib and include paths from c++ mongo client to Makefile, eg:
 INCLUDE_DIRS := include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
 LDFLAGS       = /home/ubuntu/work/src/mongo-cxx-driver-nightly/build/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_program_options
+
+RUN LIKE:
+$ /usr/local/bin/gogomongo start /etc/gogomongo/conf.json --ns folksylog.lsevents
+
+RUN OPTIONS:
+1) start|stop|restart
+2) config file
+*) --host    (default: localhost)
+*) --port    (default: 27017)
+*) --ns      (default: gogomongo.lsevents)
+*) --pidfile (default: /run/gogomongo.pid)
+*) --errfile (default: /var/log/gogomongoerrors.log)
