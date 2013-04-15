@@ -1,4 +1,5 @@
 RM    := rm -f
+RMDIR := rm -rf
 CP    := cp
 MKDIR := mkdir -p
 AR    := ar -rv
@@ -21,7 +22,7 @@ CXXMAKEDEPS   = $(CXX) -M $(CXXFLAGS) $(CPPFLAGS)
 
 all : bin/gogomongo
 
-.PHONY : all clean cuke wip test install
+.PHONY : all clean cuke wip test install uninstall
 
 clean :
 	$(RM) $(CLEANLIST)
@@ -46,6 +47,10 @@ install :
 	$(CP) config/builddb.js /etc/gogomongo/builddb.js && \
 	$(MONGO) /etc/gogomongo/builddb.js
 
+uninstall :
+	$(RM) /usr/local/bin/gogomongo && \
+	$(RMDIR) /etc/gogomongo
+
 bin/gogomongo : MACROS = -DPRIVATE=private -DPROTECTED=protected -DVIRTUAL="" -D"TEST_ONLY(n)=/* n */"
 bin/gogomongo : src/gogomongo.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
@@ -64,7 +69,9 @@ gtest/src/gtest-all.cc :
 
 ifneq "$(MAKECMDGOALS)" "clean"
   ifneq "$(MAKECMDGOALS)" "install"
-    -include $(subst .cpp,.dpp,$(SRC)) -include $(subst .cpp,.dpp,$(TSRC))
+    ifndef NODEPS
+      -include $(subst .cpp,.dpp,$(SRC)) -include $(subst .cpp,.dpp,$(TSRC))
+    endif
   endif
 endif
 
