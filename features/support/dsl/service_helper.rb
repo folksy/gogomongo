@@ -4,7 +4,7 @@ module ServiceHelper
     attr_reader :process
     
     def initialize
-      cmd = "bin/logserver start #{ CONFIG[:file] }" +
+      cmd = "bin/gogomongo start #{ CONFIG[:file] }" +
         " --ns #{ CONFIG[:ns] }" +
         " --pidfile #{ CONFIG[:pidfile] }"
       puts cmd
@@ -27,8 +27,8 @@ module ServiceHelper
 
       def stop
         if @_service
-          puts "bin/logserver stop --pidfile #{ CONFIG[:pidfile] }"
-          puts `bin/logserver stop --pidfile #{ CONFIG[:pidfile] }`
+          puts "bin/gogomongo stop --pidfile #{ CONFIG[:pidfile] }"
+          puts `bin/gogomongo stop --pidfile #{ CONFIG[:pidfile] }`
           @_service.process.close
           @_service = nil
         end

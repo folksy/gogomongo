@@ -10,23 +10,23 @@ SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
 TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard test/sanity/*.cpp) $(wildcard test/fhq/processors/*.cpp)
 TOBJ          = $(subst .cpp,.o,$(TSRC))
-EXES         := bin/logserver test/test_runner
+EXES         := bin/gogomongo test/test_runner
 CLEANLIST     = $(OBJ) $(TOBJ) $(EXES) $(wildcard log/*.log) $(subst .o,.dpp,$(OBJ)) $(subst .o,.dpp,$(TOBJ))
 LDFLAGS       = -Wl,-rpath,/usr/local/lib /usr/local/lib/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options
 LD_LIBRARY_PATH += /usr/local/lib
 CXXMAKEDEPS   = $(CXX) -M $(CXXFLAGS) $(CPPFLAGS)
 
-all : bin/logserver
+all : bin/gogomongo
 
 .PHONY : all clean cuke wip
 
 clean :
 	$(RM) $(CLEANLIST)
 
-cuke : bin/logserver
+cuke : bin/gogomongo
 	bundle exec cucumber
 
-wip : bin/logserver
+wip : bin/gogomongo
 	bundle exec cucumber -p wip
 
 test : test/test_runner
@@ -36,8 +36,8 @@ test : test/test_runner
 	test/test_runner
   endif
 
-bin/logserver : MACROS = -DPRIVATE=private -DPROTECTED=protected -DVIRTUAL="" -D"TEST_ONLY(n)=/* n */"
-bin/logserver : src/logserver.o
+bin/gogomongo : MACROS = -DPRIVATE=private -DPROTECTED=protected -DVIRTUAL="" -D"TEST_ONLY(n)=/* n */"
+bin/gogomongo : src/gogomongo.o
 	$(CXX) -o $@ $+ $(LDFLAGS)
 
 test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include test

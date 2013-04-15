@@ -1,7 +1,7 @@
 *.o
 *.d
 *.dpp
-bin/logserver
+bin/gogomongo
 test/test_runner
 log/*.log
 lib/*.a
