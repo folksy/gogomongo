@@ -67,12 +67,10 @@ int main( int argc, char *argv[] )
          command.compare( "stop" ) != 0 &&
          command.compare( "restart" ) != 0 )
       throw std::runtime_error( "Unrecognised command." );
-    if ( command.compare( "stop" ) != 0 && argc < 3 )
-      throw std::runtime_error( "Any run command requires a config filename parameter." );
-    std::string configfname( command.compare( "stop" ) == 0 ? "N/A" : argv[2] );
     std::string
       host( "localhost" ),
       ns( "gogomongo.lsevents" ),
+      configfname( "/etc/gogomongo/conf.json" ),
       pidfname( "/run/gogomongo.pid" ),
       errlogfname( "/var/log/gogomongoerrors.log" );
     int port( 27017 );
@@ -80,6 +78,7 @@ int main( int argc, char *argv[] )
       { "host",    required_argument, nullptr, 'H' },
       { "port",    required_argument, nullptr, 'P' },
       { "ns",      required_argument, nullptr, 'N' },
+      { "config",  required_argument, nullptr, 'c' },
       { "pidfile", required_argument, nullptr, 'p' },
       { "errfile", required_argument, nullptr, 'e' }
     };
@@ -90,6 +89,7 @@ int main( int argc, char *argv[] )
         case 'H' : host = optarg; break;
         case 'P' : port = atoi( optarg ); break;
         case 'N' : ns = optarg; break;
+        case 'c' : configfname = optarg; break;
         case 'p' : pidfname = optarg; break;
         case 'e' : errlogfname = optarg; break;
         default :

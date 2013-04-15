@@ -1,7 +1,7 @@
 /*
- * Get and flush the database.
+ * Get and flush the log write database.
  */
-var db = connect( "folksylog" );
+var db = connect( "gogomongo" );
 var coll;
 db.runCommand( { fsync: 1 } );
 
@@ -12,6 +12,12 @@ coll = db["lsevents"];
 if ( typeof db["lsevents"] !== "undefined" )
   db["lsevents"].drop();
 db.createCollection( "lsevents", { capped: true, size: 1048576 } );
+
+/*
+ * Create the processed logs database
+ */
+db = connect( "folksylog" );
+db.runCommand( { fsync: 1 } );
 
 /*
  * Create the folksylog events namespace.

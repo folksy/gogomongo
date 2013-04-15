@@ -4,8 +4,9 @@ module ServiceHelper
     attr_reader :process
     
     def initialize
-      cmd = "bin/gogomongo start #{ CONFIG[:file] }" +
+      cmd = "bin/gogomongo start" +
         " --ns #{ CONFIG[:ns] }" +
+        " --config #{ CONFIG[:file] }" +
         " --pidfile #{ CONFIG[:pidfile] }" +
         " --errfile #{ CONFIG[:errfile] }"
       puts cmd
