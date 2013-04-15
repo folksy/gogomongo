@@ -4,7 +4,7 @@ SED := sed -e
 
 VPATH = src include test
 
-INCLUDE_DIRS := src include /usr/local/include /opt/local/include /home/ubuntu/work/src/mongo-cxx-driver-nightly/src
+INCLUDE_DIRS := src include /usr/local/include /opt/local/include
 CXXFLAGS      = -std=c++11 -Wall -g $(MACROS) $(addprefix -I,$(INCLUDE_DIRS))
 SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
@@ -12,7 +12,7 @@ TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard tes
 TOBJ          = $(subst .cpp,.o,$(TSRC))
 EXES         := bin/logserver test/test_runner
 CLEANLIST     = $(OBJ) $(TOBJ) $(EXES) $(wildcard log/*.log) $(subst .o,.dpp,$(OBJ)) $(subst .o,.dpp,$(TOBJ))
-LDFLAGS       = -Wl,-rpath,/usr/local/lib /home/ubuntu/work/src/mongo-cxx-driver-nightly/build/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options
+LDFLAGS       = -Wl,-rpath,/usr/local/lib /usr/local/lib/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options
 LD_LIBRARY_PATH += /usr/local/lib
 CXXMAKEDEPS   = $(CXX) -M $(CXXFLAGS) $(CPPFLAGS)
 

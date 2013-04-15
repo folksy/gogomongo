@@ -12,6 +12,7 @@ wget http://downloads.mongodb.org/cxx-driver/mongodb-linux-x86_64-latest.tgz
 tar zxvf mongodb-linux-x86_64-latest.tgz
 cd mongo-cxx-driver-nightly
 scons
+sudo scons install
 
 sudo sh -c 'echo "export LD_LIBRARY_PATH=\"/usr/local/lib\"" >> /etc/environment'
 sudo reboot
