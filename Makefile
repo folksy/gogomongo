@@ -13,7 +13,6 @@ SRC           = $(wildcard src/*.cpp)
 OBJ           = $(subst .cpp,.o,$(SRC))
 TSRC          = $(wildcard test/*.cpp) $(wildcard test/fhq/*.cpp) $(wildcard test/sanity/*.cpp) $(wildcard test/fhq/processors/*.cpp)
 TOBJ          = $(subst .cpp,.o,$(TSRC))
-DSRC          = $(SRC)
 EXES         := bin/gogomongo test/test_runner
 CLEANLIST     = $(OBJ) $(TOBJ) $(EXES) $(wildcard log/*.log) $(subst .o,.dpp,$(OBJ)) $(subst .o,.dpp,$(TOBJ))
 LDFLAGS       = -Wl,-rpath,/usr/local/lib /usr/local/lib/libmongoclient.a -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options
@@ -53,7 +52,6 @@ bin/gogomongo : src/gogomongo.o
 
 test/test_runner.o test/test_runner.dpp %_test.o %_test.dpp : INCLUDE_DIRS += gtest/include test
 test/test_runner %_test.o : MACROS = -DPRIVATE=public -DPROTECTED=public -DVIRTUAL=virtual -D"TEST_ONLY(n)=n"
-test/test_runner %_test.o : DSRC += $(TSRC)
 
 test/test_runner : $(TOBJ) lib/libgtest.a
 	$(CXX) -o $@ $+ $(LDFLAGS) -pthread
@@ -66,7 +64,7 @@ gtest/src/gtest-all.cc :
 
 ifneq "$(MAKECMDGOALS)" "clean"
   ifneq "$(MAKECMDGOALS)" "install"
-    -include $(subst .cpp,.dpp,$(DSRC))
+    -include $(subst .cpp,.dpp,$(SRC)) -include $(subst .cpp,.dpp,$(TSRC))
   endif
 endif
 
